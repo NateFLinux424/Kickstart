@@ -60,5 +60,5 @@ EOF
 echo "Final checks complete. VM should be accessible!"
 
 # run compose.yml
-docker compose up -d
+sudo docker compose up -d
 
