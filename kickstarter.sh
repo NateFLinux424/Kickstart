@@ -66,13 +66,10 @@ EOF
 az network nsg rule create --resource-group midterm3 --nsg-name midterm3test-nsg --name AllowSSH \
   --priority 100 --direction Inbound --access Allow --protocol Tcp --destination-port-ranges 22 --source-address-prefixes "0.0.0.0/0"
 
-# Check VM resource usage after running Docker
-top
-
 echo "Final checks complete. VM should be accessible!"
 
 # run compose.yml
-sudo docker compose up -d
+docker compose up 
 
 echo "Waiting for MySQL to be ready..."
 while ! docker exec database-1 mysqladmin --user=root --password=wordpress ping --silent; do
