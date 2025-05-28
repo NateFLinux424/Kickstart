@@ -25,10 +25,6 @@ sudo docker run hello-world
 sudo systemctl start docker
 sudo systemctl enable docker
 
-# Add the current user to the Docker group (avoiding permission issues)
-sudo usermod -aG docker $USER
-newgrp docker
-
 # Ensure container runtime is running
 sudo systemctl restart containerd
 sudo systemctl status containerd
