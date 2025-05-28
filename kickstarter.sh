@@ -1,28 +1,39 @@
 # Install Docker & dependencies
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-# Add Docker's official GPG key:
-sudo apt-get update
-sudo apt-get install ca-certificates curl
+
+# Setup keyrings and add Docker's official GPG key
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add the repository to Apt sources:
+# Add the Docker repository to Apt sources
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
 sudo apt-get update
 
- sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# Install Docker components
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-#verify that installation was successful
+# Verify installation
 sudo docker run hello-world
 
-# Write docker-compose.yml separately (inside EOF block)
+# Ensure Docker is running
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Add the current user to the Docker group (avoiding permission issues)
+sudo usermod -aG docker $USER
+newgrp docker
+
+# Ensure container runtime is running
+sudo systemctl restart containerd
+sudo systemctl status containerd
+
+# Write docker-compose.yml file
 cat <<EOF > docker-compose.yml
 services:
   database:
@@ -47,7 +58,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      WORDPRESS_DB_HOST: database:3306
+      WORDPRESS_DB_HOST: database
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
@@ -55,7 +66,6 @@ services:
       - ./:/var/www/html
     networks:
       - wordpress-network
-  
 
 networks:
   wordpress-network:
@@ -63,10 +73,10 @@ networks:
 volumes:
   db-data:
 EOF
-# Check VM resource usage after running Docker
 
+# Check VM resource usage
 echo "Final checks complete. VM should be accessible!"
 
-# run compose.yml
+# Run Docker Compose
 sudo docker compose up -d
 
