@@ -9,7 +9,7 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 # Add the current user to the Docker group (avoiding permission issues) 
 sudo groupadd docker
-sudo usermod -aG docker $USER newgrp docker
+sudo usermod -aG docker $USER
 
 # Add the Docker repository to Apt sources
 echo \
