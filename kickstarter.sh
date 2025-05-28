@@ -12,17 +12,7 @@ sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-# Add user to the Docker group & fix socket permissions
-sudo usermod -aG docker $USER
-sudo chmod 666 /var/run/docker.sock
-newgrp docker
-
-# Restart Docker to apply changes
-sudo systemctl restart docker
-
 cat /etc/apt/sources.list.d/docker.list
-
 # Write docker-compose.yml separately (inside EOF block)
 cat <<EOF > docker-compose.yml
 services:
