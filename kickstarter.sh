@@ -69,7 +69,7 @@ az network nsg rule create --resource-group midterm3 --nsg-name midterm3test-nsg
 echo "Final checks complete. VM should be accessible!"
 
 # run compose.yml
-docker compose up 
+sudo docker compose up 
 
 echo "Waiting for MySQL to be ready..."
 while ! docker exec database-1 mysqladmin --user=root --password=wordpress ping --silent; do
